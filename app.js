@@ -151,11 +151,6 @@ app.get("/listings/new", (req, res, next) => {
 
         req.session.returnTo = req.originalUrl;
 
-        console.log(
-            "Saving returnTo:",
-            req.session.returnTo
-        );
-
         req.flash(
             "error",
             "You must be logged in to create the listing!"
@@ -234,11 +229,6 @@ app.get("/listings/:id/edit", async (req, res, next) => {
 
         req.session.returnTo = req.originalUrl;
 
-        console.log(
-            "Saving returnTo:",
-            req.session.returnTo
-        );
-
         req.flash(
             "error",
             "You must be logged in to edit the listing!"
@@ -292,7 +282,9 @@ app.put("/listings/:id", async (req, res, next) => {
 
     if (!req.isAuthenticated()) {
 
-        req.session.returnTo = req.originalUrl;
+        // PUT request ke baad login hone par
+        // listing page par redirect hoga
+        req.session.returnTo = `/listings/${req.params.id}`;
 
         req.flash(
             "error",
@@ -409,7 +401,10 @@ app.post("/listings/:id/reviews", async (req, res, next) => {
 
     if (!req.isAuthenticated()) {
 
-        req.session.returnTo = req.originalUrl;
+        // IMPORTANT:
+        // Review POST URL ko returnTo nahi banana hai.
+        // Login ke baad listing page par bhejna hai.
+        req.session.returnTo = `/listings/${req.params.id}`;
 
         req.flash(
             "error",
@@ -482,7 +477,10 @@ app.delete(
 
         if (!req.isAuthenticated()) {
 
-            req.session.returnTo = req.originalUrl;
+            // DELETE request ko returnTo nahi banana hai.
+            // Login ke baad listing page par bhejna hai.
+            req.session.returnTo =
+                `/listings/${req.params.listingId}`;
 
             req.flash(
                 "error",
@@ -521,6 +519,7 @@ app.delete(
 
 
             // Delete Review document
+
             await Review.findByIdAndDelete(reviewId);
 
 
