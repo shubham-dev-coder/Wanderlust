@@ -407,7 +407,6 @@ app.delete("/listings/:id", async (req, res, next) => {
 
 app.post("/listings/:id/reviews", async (req, res, next) => {
 
-    // User login check
     if (!req.isAuthenticated()) {
 
         req.session.returnTo = req.originalUrl;
@@ -431,7 +430,6 @@ app.post("/listings/:id/reviews", async (req, res, next) => {
 
         const { id } = req.params;
 
-        // Find listing
         const listing = await Listing.findById(id);
 
         if (!listing) {
@@ -444,16 +442,12 @@ app.post("/listings/:id/reviews", async (req, res, next) => {
             return res.redirect("/listings");
         }
 
-        // Create new review
         const newReview = new Review(req.body.review);
 
-        // Add review to listing
         listing.reviews.push(newReview);
 
-        // Save review
         await newReview.save();
 
-        // Save listing
         await listing.save();
 
         req.flash(
@@ -475,6 +469,89 @@ app.post("/listings/:id/reviews", async (req, res, next) => {
         res.redirect(`/listings/${req.params.id}`);
     }
 });
+
+
+// ===============================
+// DELETE REVIEW
+// LOGIN REQUIRED
+// ===============================
+
+app.delete(
+    "/listings/:listingId/reviews/:reviewId",
+    async (req, res, next) => {
+
+        if (!req.isAuthenticated()) {
+
+            req.session.returnTo = req.originalUrl;
+
+            req.flash(
+                "error",
+                "You must be logged in to delete a review!"
+            );
+
+            return req.session.save((err) => {
+
+                if (err) {
+                    return next(err);
+                }
+
+                res.redirect("/login");
+            });
+        }
+
+        try {
+
+            const {
+                listingId,
+                reviewId
+            } = req.params;
+
+
+            // Remove review reference
+            // from Listing document
+
+            await Listing.findByIdAndUpdate(
+                listingId,
+                {
+                    $pull: {
+                        reviews: reviewId
+                    }
+                }
+            );
+
+
+            // Delete Review document
+            await Review.findByIdAndDelete(reviewId);
+
+
+            req.flash(
+                "success",
+                "Review deleted successfully!"
+            );
+
+
+            res.redirect(
+                `/listings/${listingId}`
+            );
+
+        } catch (err) {
+
+            console.log(
+                "DELETE REVIEW ERROR:",
+                err
+            );
+
+            req.flash(
+                "error",
+                err.message
+            );
+
+            res.redirect(
+                `/listings/${req.params.listingId}`
+            );
+        }
+    }
+);
 
 
 // ===============================
