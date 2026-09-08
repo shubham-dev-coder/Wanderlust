@@ -6,6 +6,7 @@ const path = require("path");
 
 const Listing = require("./models/listing.js");
 const User = require("./models/user.js");
+const Review = require("./models/review.js");
 
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
@@ -97,7 +98,6 @@ passport.deserializeUser(User.deserializeUser());
 app.use((req, res, next) => {
 
     res.locals.success = req.flash("success");
-
     res.locals.error = req.flash("error");
 
     res.locals.currentUser = req.user;
@@ -149,10 +149,6 @@ app.get("/listings/new", (req, res, next) => {
 
     if (!req.isAuthenticated()) {
 
-        // IMPORTANT
-        // User kis page par jana chahta tha
-        // us URL ko session mein save karo
-
         req.session.returnTo = req.originalUrl;
 
         console.log(
@@ -165,7 +161,6 @@ app.get("/listings/new", (req, res, next) => {
             "You must be logged in to create the listing!"
         );
 
-        // Session ko save karne ke baad login par jao
         return req.session.save((err) => {
 
             if (err) {
@@ -176,7 +171,6 @@ app.get("/listings/new", (req, res, next) => {
         });
     }
 
-    // Agar logged in hai to form dikhao
     res.render("listings/new.ejs");
 });
 
@@ -189,10 +183,6 @@ app.get("/listings/new", (req, res, next) => {
 app.post("/listings", async (req, res, next) => {
 
     if (!req.isAuthenticated()) {
-
-        // POST request ko dobara automatically
-        // submit nahi karna hai.
-        // Isliye login ke baad form par bhejenge.
 
         req.session.returnTo = "/listings/new";
 
@@ -411,6 +401,83 @@ app.delete("/listings/:id", async (req, res, next) => {
 
 
 // ===============================
+// ADD REVIEW
+// LOGIN REQUIRED
+// ===============================
+
+app.post("/listings/:id/reviews", async (req, res, next) => {
+
+    // User login check
+    if (!req.isAuthenticated()) {
+
+        req.session.returnTo = req.originalUrl;
+
+        req.flash(
+            "error",
+            "You must be logged in to add a review!"
+        );
+
+        return req.session.save((err) => {
+
+            if (err) {
+                return next(err);
+            }
+
+            res.redirect("/login");
+        });
+    }
+
+    try {
+
+        const { id } = req.params;
+
+        // Find listing
+        const listing = await Listing.findById(id);
+
+        if (!listing) {
+
+            req.flash(
+                "error",
+                "Listing you requested does not exist!"
+            );
+
+            return res.redirect("/listings");
+        }
+
+        // Create new review
+        const newReview = new Review(req.body.review);
+
+        // Add review to listing
+        listing.reviews.push(newReview);
+
+        // Save review
+        await newReview.save();
+
+        // Save listing
+        await listing.save();
+
+        req.flash(
+            "success",
+            "Review added successfully!"
+        );
+
+        res.redirect(`/listings/${id}`);
+
+    } catch (err) {
+
+        console.log("REVIEW ERROR:", err);
+
+        req.flash(
+            "error",
+            err.message
+        );
+
+        res.redirect(`/listings/${req.params.id}`);
+    }
+});
+
+
+// ===============================
 // SHOW LISTING
 // ===============================
 
@@ -420,7 +487,9 @@ app.get("/listings/:id", async (req, res) => {
 
         const { id } = req.params;
 
-        const listing = await Listing.findById(id);
+        const listing = await Listing
+            .findById(id)
+            .populate("reviews");
 
         if (!listing) {
 
@@ -437,6 +506,8 @@ app.get("/listings/:id", async (req, res) => {
         });
 
     } catch (err) {
+
+        console.log(err);
 
         req.flash(
             "error",
@@ -534,20 +605,6 @@ app.get("/login", (req, res) => {
 
 app.post("/login", (req, res, next) => {
 
-    /*
-        IMPORTANT:
-
-        Login hone se PEHLE returnTo ko
-        session se read kar rahe hain.
-
-        Example:
-
-        returnTo = "/listings/new"
-
-        Isliye login ke baad directly
-        /listings/new par jayega.
-    */
-
     const redirectUrl =
         req.session.returnTo || "/listings";
 
@@ -556,18 +613,14 @@ app.post("/login", (req, res, next) => {
         redirectUrl
     );
 
-
     passport.authenticate(
         "local",
         (err, user, info) => {
 
-            // Passport error
             if (err) {
                 return next(err);
             }
 
-
-            // Username/password wrong
             if (!user) {
 
                 req.flash(
@@ -579,27 +632,18 @@ app.post("/login", (req, res, next) => {
                 return res.redirect("/login");
             }
 
-
-            // User ko login karao
             req.logIn(user, (err) => {
 
                 if (err) {
                     return next(err);
                 }
 
-
                 req.flash(
                     "success",
                     "Welcome back to Wanderlust!"
                 );
 
-
-                // returnTo remove karo
                 delete req.session.returnTo;
-
-
-                // Session save hone ke baad
-                // exact page par redirect karo
 
                 req.session.save((err) => {
 
