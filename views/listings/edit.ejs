@@ -1,0 +1,151 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="text-center pb-5">
+
+    <h3>Edit Listing</h3>
+
+    <div class="col-6 mx-auto">
+
+        <form
+            method="POST"
+            action="/listings/<%= listing._id %>?_method=PUT"
+            class="needs-validation"
+            novalidate
+        >
+
+            <!-- Title -->
+            <div class="mb-3">
+                <label for="title" class="form-label">
+                    Title
+                </label>
+
+                <input
+                    id="title"
+                    name="listing[title]"
+                    value="<%= listing.title %>"
+                    placeholder="Enter title"
+                    type="text"
+                    class="form-control"
+                    required
+                >
+
+                <div class="invalid-feedback">
+                    Please enter a title.
+                </div>
+            </div>
+
+
+            <!-- Description -->
+            <div class="mb-3">
+                <label for="description" class="form-label">
+                    Description
+                </label>
+
+                <textarea
+                    id="description"
+                    name="listing[description]"
+                    placeholder="Enter description"
+                    class="form-control"
+                    required
+                ><%= listing.description %></textarea>
+
+                <div class="invalid-feedback">
+                    Please enter a description.
+                </div>
+            </div>
+
+
+            <!-- Image -->
+            <div class="mb-3">
+                <label for="image" class="form-label">
+                    Image URL
+                </label>
+
+                <input
+                    id="image"
+                    name="listing[image][url]"
+                    value="<%= listing.image.url %>"
+                    placeholder="Enter image URL/Link"
+                    type="text"
+                    class="form-control"
+                >
+            </div>
+
+
+            <!-- Price -->
+            <div class="mb-3">
+                <label for="price" class="form-label">
+                    Price
+                </label>
+
+                <input
+                    id="price"
+                    name="listing[price]"
+                    value="<%= listing.price %>"
+                    placeholder="Enter price"
+                    type="number"
+                    class="form-control"
+                    min="1"
+                    required
+                >
+
+                <div class="invalid-feedback">
+                    Please enter a valid price.
+                </div>
+            </div>
+
+
+            <!-- Location -->
+            <div class="mb-3">
+                <label for="location" class="form-label">
+                    Location
+                </label>
+
+                <input
+                    id="location"
+                    name="listing[location]"
+                    value="<%= listing.location %>"
+                    placeholder="Enter location"
+                    type="text"
+                    class="form-control"
+                    required
+                >
+
+                <div class="invalid-feedback">
+                    Please enter a location.
+                </div>
+            </div>
+
+
+            <!-- Country -->
+            <div class="mb-3">
+                <label for="country" class="form-label">
+                    Country
+                </label>
+
+                <input
+                    id="country"
+                    name="listing[country]"
+                    value="<%= listing.country %>"
+                    placeholder="Enter country name"
+                    type="text"
+                    class="form-control"
+                    required
+                >
+
+                <div class="invalid-feedback">
+                    Please enter a country.
+                </div>
+            </div>
+
+
+            <!-- Submit -->
+            <button type="submit" class="btn btn-danger">
+                Edit
+            </button>
+
+        </form>
+
+    </div>
+
+</div>

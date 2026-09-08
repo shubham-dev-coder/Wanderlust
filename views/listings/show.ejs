@@ -1,0 +1,264 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="text-center pb-5">
+
+    <h3>Listing Details:</h3>
+
+    <!-- ==================== LISTING ==================== -->
+
+    <div class="row">
+        <div class="col-6 mx-auto">
+
+            <div class="card">
+
+                <img
+                    src="<%= listing.image.url %>"
+                    class="card-img-top show-img"
+                    alt="listing_image"
+                >
+
+                <div class="card-body">
+
+                    <p class="card-text">
+                        <%= listing.title %>
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ==================== LISTING INFORMATION ==================== -->
+
+    <ul class="d-inline-block text-start mt-3">
+
+        <li>
+            <%= listing.title %>
+        </li>
+
+        <li>
+            <%= listing.description %>
+        </li>
+
+        <li>
+            ₹ <%= listing.price.toLocaleString("en-IN") %>
+        </li>
+
+        <li>
+            <%= listing.location %>
+        </li>
+
+        <li>
+            <%= listing.country %>
+        </li>
+
+    </ul>
+
+
+    <!-- ==================== EDIT & DELETE ==================== -->
+
+    <div class="mb-5">
+
+        <a
+            href="/listings/<%= listing._id %>/edit"
+            class="btn btn-danger"
+        >
+            Edit this Listing
+        </a>
+
+        <form
+            method="POST"
+            action="/listings/<%= listing._id %>?_method=DELETE"
+            class="d-inline"
+        >
+
+            <button
+                type="submit"
+                class="btn btn-dark"
+            >
+                Delete this listing
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- ==================== LEAVE A REVIEW ==================== -->
+
+    <div class="row mt-5">
+
+        <div class="col-8 mx-auto">
+
+            <h4 class="mb-4">
+                Leave a Review
+            </h4>
+
+            <form
+                action="/listings/<%= listing._id %>/reviews"
+                method="POST"
+                novalidate
+                class="needs-validation"
+            >
+
+                <!-- Rating -->
+
+                <div class="mb-3 text-start">
+
+                    <label
+                        for="rating"
+                        class="form-label"
+                    >
+                        Rating
+                    </label>
+
+                    <input
+                        type="range"
+                        min="1"
+                        max="5"
+                        id="rating"
+                        name="review[rating]"
+                        class="form-range"
+                    >
+
+                </div>
+
+
+                <!-- Comment -->
+
+                <div class="mb-3 text-start">
+
+                    <label
+                        for="comment"
+                        class="form-label"
+                    >
+                        Comments
+                    </label>
+
+                    <textarea
+                        name="review[comment]"
+                        id="comment"
+                        rows="5"
+                        class="form-control"
+                        placeholder="Write your review..."
+                        required
+                    ></textarea>
+
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+
+                    <div class="invalid-feedback">
+                        Please write a comment.
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-dark"
+                >
+                    Submit
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================== ALL REVIEWS ==================== -->
+
+    <div class="row mt-5">
+
+        <div class="col-10 mx-auto">
+
+            <h4 class="mb-4">
+                All Reviews
+            </h4>
+
+            <div class="row">
+
+                <% for(let review of listing.reviews) { %>
+
+                    <div class="col-md-6 mb-4">
+
+                        <div class="card shadow-sm h-100">
+
+                            <div class="card-body text-start">
+
+                                <h5 class="card-title">
+                                    Guest Review
+                                </h5>
+
+
+                                <!-- Rating -->
+
+                                <p class="card-text mb-2">
+
+                                    <strong>
+                                        Rating:
+                                    </strong>
+
+                                    <span class="text-warning">
+                                        <%= "★".repeat(review.rating) %>
+                                    </span>
+
+                                    <span class="text-muted">
+                                        (<%= review.rating %>/5)
+                                    </span>
+
+                                </p>
+
+
+                                <!-- Comment -->
+
+                                <p class="card-text">
+
+                                    <strong>
+                                        Comment:
+                                    </strong>
+
+                                    <br>
+
+                                    <%= review.comment %>
+
+                                </p>
+
+
+                                <!-- Delete Review -->
+
+                                <form
+                                    method="POST"
+                                    action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE"
+                                >
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-sm btn-danger"
+                                    >
+                                        Delete Review
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                <% } %>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
