@@ -1,3 +1,4 @@
+
 <% layout("/layouts/boilerplate") %>
 
 <div class="text-center pb-5">
@@ -104,30 +105,67 @@
                 class="needs-validation"
             >
 
-                <!-- Rating -->
+                <!-- ==================== STAR RATING ==================== -->
 
                 <div class="mb-3 text-start">
 
-                    <label
-                        for="rating"
-                        class="form-label"
-                    >
+                    <label class="form-label">
                         Rating
                     </label>
 
-                    <input
-                        type="range"
-                        min="1"
-                        max="5"
-                        id="rating"
-                        name="review[rating]"
-                        class="form-range"
-                    >
+                    <div class="star-rating">
+
+                        <input
+                            type="radio"
+                            id="star5"
+                            name="review[rating]"
+                            value="5"
+                            required
+                        >
+                        <label for="star5">★</label>
+
+                        <input
+                            type="radio"
+                            id="star4"
+                            name="review[rating]"
+                            value="4"
+                        >
+                        <label for="star4">★</label>
+
+                        <input
+                            type="radio"
+                            id="star3"
+                            name="review[rating]"
+                            value="3"
+                        >
+                        <label for="star3">★</label>
+
+                        <input
+                            type="radio"
+                            id="star2"
+                            name="review[rating]"
+                            value="2"
+                        >
+                        <label for="star2">★</label>
+
+                        <input
+                            type="radio"
+                            id="star1"
+                            name="review[rating]"
+                            value="1"
+                        >
+                        <label for="star1">★</label>
+
+                    </div>
+
+                    <div class="invalid-feedback">
+                        Please select a rating.
+                    </div>
 
                 </div>
 
 
-                <!-- Comment -->
+                <!-- ==================== COMMENT ==================== -->
 
                 <div class="mb-3 text-start">
 
@@ -157,6 +195,8 @@
 
                 </div>
 
+
+                <!-- ==================== SUBMIT ==================== -->
 
                 <button
                     type="submit"
@@ -197,7 +237,7 @@
                                 </h5>
 
 
-                                <!-- Rating -->
+                                <!-- ==================== RATING ==================== -->
 
                                 <p class="card-text mb-2">
 
@@ -216,7 +256,7 @@
                                 </p>
 
 
-                                <!-- Comment -->
+                                <!-- ==================== COMMENT ==================== -->
 
                                 <p class="card-text">
 
@@ -231,7 +271,7 @@
                                 </p>
 
 
-                                <!-- Delete Review -->
+                                <!-- ==================== DELETE REVIEW ==================== -->
 
                                 <form
                                     method="POST"
