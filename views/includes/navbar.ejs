@@ -1,36 +1,50 @@
-
-<nav class="navbar navbar-expand-md  bg-body-light border-bottom sticky-top">
+<nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
   <div class="container-fluid">
- <a class="navbar-brand" href="/">
-    <i class="fa-solid fa-compass"></i>
-</a>
-    <button 
-    class="navbar-toggler" 
-    type="button" 
-    data-bs-toggle="collapse" 
-    data-bs-target="#navbarNavAltMarkup" 
-    >
-
-<span class="navbar-toggler-icon"></span>
-
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
-        <a class="nav-link" href="/">Home</a>
-        <a class="nav-link" href="/listings">All Listings</a>
-        <a class="nav-link" href="/listings/new">Add new Listing</a>
+    
+    <div class="row w-100 align-items-center m-0">
+      
+      <!-- Left Side: Logo & Explore -->
+      <div class="col-4 d-flex align-items-center">
+        <a class="navbar-brand me-3" href="/">
+          <i class="fa-solid fa-compass"></i>
+        </a>
+        <div class="navbar-nav">
+          <a class="nav-link" href="/listings">Explore</a>
+        </div>
       </div>
 
-      <div class="navbar-nav ms-auto">
-        <% if(!currentUser){ %>
-          <a class="nav-link" href="/signup">signup</a>
-          <a class="nav-link" href="/login">Log in</a>
-        <% } %>
-
-        <% if(currentUser){ %>
-        <a class="nav-link" href="/logout">Logout</a>
-        <% } %>
+      <!-- Center: Airbnb Style Search Bar -->
+      <div class="col-4 d-flex justify-content-center align-items-center">
+        <form class="d-flex navbar-search-form align-items-center" role="search">
+          <input 
+            class="form-control search-inp" 
+            type="search" 
+            placeholder="Search destinations" 
+            aria-label="Search"
+          >
+          <button class="btn search-btn" type="submit">
+            <i class="fa-solid fa-magnifying-glass me-1"></i> Search
+          </button>
+        </form>
       </div>
+
+      <!-- Right Side: Links & Auth -->
+      <div class="col-4 d-flex justify-content-end align-items-center">
+        <div class="navbar-nav flex-row align-items-center gap-3">
+          <a class="nav-link" href="/listings/new">Airbnb your home</a>
+
+          <% if(!currentUser){ %>
+            <a class="nav-link" href="/signup"><b>signup</b></a>
+            <a class="nav-link" href="/login"><b>Log in</b></a>
+          <% } %>
+
+          <% if(currentUser){ %>
+            <a class="nav-link" href="/logout">Logout</a>
+          <% } %>
+        </div>
+      </div>
+
     </div>
+
   </div>
 </nav>
