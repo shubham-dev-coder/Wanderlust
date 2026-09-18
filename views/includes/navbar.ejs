@@ -1,50 +1,82 @@
 <nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
   <div class="container-fluid">
-    
-    <div class="row w-100 align-items-center m-0">
-      
-      <!-- Left Side: Logo & Explore -->
-      <div class="col-4 d-flex align-items-center">
-        <a class="navbar-brand me-3" href="/">
-          <i class="fa-solid fa-compass"></i>
-        </a>
-        <div class="navbar-nav">
-          <a class="nav-link" href="/listings">Explore</a>
-        </div>
-      </div>
 
-      <!-- Center: Airbnb Style Search Bar -->
-      <div class="col-4 d-flex justify-content-center align-items-center">
-        <form class="d-flex navbar-search-form align-items-center" role="search">
-          <input 
-            class="form-control search-inp" 
-            type="search" 
-            placeholder="Search destinations" 
-            aria-label="Search"
-          >
-          <button class="btn search-btn" type="submit">
-            <i class="fa-solid fa-magnifying-glass me-1"></i> Search
-          </button>
-        </form>
-      </div>
+```
+<!-- Logo -->
+<a class="navbar-brand" href="/">
+  <i class="fa-solid fa-compass"></i>
+</a>
 
-      <!-- Right Side: Links & Auth -->
-      <div class="col-4 d-flex justify-content-end align-items-center">
-        <div class="navbar-nav flex-row align-items-center gap-3">
-          <a class="nav-link" href="/listings/new">Airbnb your home</a>
+<!-- Mobile Toggle Button -->
+<button
+  class="navbar-toggler"
+  type="button"
+  data-bs-toggle="collapse"
+  data-bs-target="#navbarNav"
+  aria-controls="navbarNav"
+  aria-expanded="false"
+  aria-label="Toggle navigation"
+>
+  <span class="navbar-toggler-icon"></span>
+</button>
 
-          <% if(!currentUser){ %>
-            <a class="nav-link" href="/signup"><b>signup</b></a>
-            <a class="nav-link" href="/login"><b>Log in</b></a>
-          <% } %>
+<!-- Navbar Content -->
+<div class="collapse navbar-collapse" id="navbarNav">
 
-          <% if(currentUser){ %>
-            <a class="nav-link" href="/logout">Logout</a>
-          <% } %>
-        </div>
-      </div>
+  <!-- Left -->
+  <div class="navbar-nav me-auto">
+    <a class="nav-link" href="/listings">Explore</a>
+  </div>
 
-    </div>
+  <!-- Center Search -->
+  <form
+    class="d-flex navbar-search-form align-items-center mx-md-auto my-2 my-md-0"
+    role="search"
+  >
+    <input
+      class="form-control search-inp"
+      type="search"
+      placeholder="Search destinations"
+      aria-label="Search"
+    >
+
+    <button class="btn search-btn" type="submit">
+      <i class="fa-solid fa-magnifying-glass me-1"></i>
+      Search
+    </button>
+  </form>
+
+  <!-- Right -->
+  <div class="navbar-nav ms-md-auto align-items-md-center">
+
+    <a class="nav-link" href="/listings/new">
+      Airbnb your home
+    </a>
+
+    <% if(!currentUser){ %>
+
+      <a class="nav-link" href="/signup">
+        <b>Sign up</b>
+      </a>
+
+      <a class="nav-link" href="/login">
+        <b>Log in</b>
+      </a>
+
+    <% } %>
+
+    <% if(currentUser){ %>
+
+      <a class="nav-link" href="/logout">
+        Logout
+      </a>
+
+    <% } %>
+
+  </div>
+
+</div>
+```
 
   </div>
 </nav>
