@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 
@@ -12,6 +13,7 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 
 const session = require("express-session");
+const { MongoStore } = require("connect-mongo");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 
@@ -22,11 +24,11 @@ const flash = require("connect-flash");
 // DATABASE CONNECTION
 // ===============================
 
-const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+const MONGO_URL = process.env.ATLASDB_URL;
 
 main()
     .then(() => {
-        console.log("connected to db");
+        console.log("connected to MongoDB Atlas");
     })
     .catch((err) => {
         console.log(err);
@@ -52,13 +54,26 @@ app.use(methodOverride("_method"));
 
 app.use(express.static(path.join(__dirname, "public")));
 
+const store = MongoStore.create({
+    mongoUrl : MONGO_URL,
+    crypto: {
+          secret:process.env.SECRET,
+    },
+    touchAfter:24 * 3600,
+});
+
+store.on("error",()=>{
+    console.log("ERROR in MONGO SESSION STORE",err);
+});
+
 
 // ===============================
 // SESSION
 // ===============================
 
 const sessionOptions = {
-    secret: "mysupersecretcode",
+    store,
+    secret: process.env.SECRET,
     resave: false,
     saveUninitialized: false,
 
@@ -67,6 +82,8 @@ const sessionOptions = {
         httpOnly: true
     }
 };
+
+
 
 app.use(session(sessionOptions));
 
