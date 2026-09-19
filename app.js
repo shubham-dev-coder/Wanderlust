@@ -1,4 +1,5 @@
 require("dotenv").config();
+require("dns").setServers(["8.8.8.8", "8.8.4.4"]);
 const express = require("express");
 const app = express();
 
@@ -55,15 +56,15 @@ app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
 
 const store = MongoStore.create({
-    mongoUrl : MONGO_URL,
+    mongoUrl: MONGO_URL,
     crypto: {
-          secret:process.env.SECRET,
+        secret: process.env.SECRET,
     },
-    touchAfter:24 * 3600,
+    touchAfter: 24 * 3600,
 });
 
-store.on("error",()=>{
-    console.log("ERROR in MONGO SESSION STORE",err);
+store.on("error", (err) => {
+    console.log("ERROR in MONGO SESSION STORE", err);
 });
 
 
@@ -82,8 +83,6 @@ const sessionOptions = {
         httpOnly: true
     }
 };
-
-
 
 app.use(session(sessionOptions));
 
@@ -151,6 +150,65 @@ app.get("/listings", async (req, res) => {
     } catch (err) {
 
         req.flash("error", err.message);
+
+        res.redirect("/listings");
+    }
+});
+
+
+// ===============================
+// SEARCH LISTINGS
+// ===============================
+
+app.get("/listings/search", async (req, res) => {
+
+    try {
+
+        const { query } = req.query;
+
+        // Agar search box empty hai
+        if (!query || query.trim() === "") {
+
+            return res.redirect("/listings");
+        }
+
+        const searchQuery = query.trim();
+
+        const allListings = await Listing.find({
+            $or: [
+                {
+                    title: {
+                        $regex: searchQuery,
+                        $options: "i"
+                    }
+                },
+                {
+                    location: {
+                        $regex: searchQuery,
+                        $options: "i"
+                    }
+                },
+                {
+                    country: {
+                        $regex: searchQuery,
+                        $options: "i"
+                    }
+                }
+            ]
+        });
+
+        res.render("listings/index.ejs", {
+            allListings
+        });
+
+    } catch (err) {
+
+        console.log("SEARCH ERROR:", err);
+
+        req.flash(
+            "error",
+            "Something went wrong while searching!"
+        );
 
         res.redirect("/listings");
     }
@@ -299,8 +357,6 @@ app.put("/listings/:id", async (req, res, next) => {
 
     if (!req.isAuthenticated()) {
 
-        // PUT request ke baad login hone par
-        // listing page par redirect hoga
         req.session.returnTo = `/listings/${req.params.id}`;
 
         req.flash(
@@ -418,9 +474,6 @@ app.post("/listings/:id/reviews", async (req, res, next) => {
 
     if (!req.isAuthenticated()) {
 
-        // IMPORTANT:
-        // Review POST URL ko returnTo nahi banana hai.
-        // Login ke baad listing page par bhejna hai.
         req.session.returnTo = `/listings/${req.params.id}`;
 
         req.flash(
@@ -494,8 +547,6 @@ app.delete(
 
         if (!req.isAuthenticated()) {
 
-            // DELETE request ko returnTo nahi banana hai.
-            // Login ke baad listing page par bhejna hai.
             req.session.returnTo =
                 `/listings/${req.params.listingId}`;
 
@@ -521,10 +572,6 @@ app.delete(
                 reviewId
             } = req.params;
 
-
-            // Remove review reference
-            // from Listing document
-
             await Listing.findByIdAndUpdate(
                 listingId,
                 {
@@ -534,17 +581,12 @@ app.delete(
                 }
             );
 
-
-            // Delete Review document
-
             await Review.findByIdAndDelete(reviewId);
-
 
             req.flash(
                 "success",
                 "Review deleted successfully!"
             );
-
 
             res.redirect(
                 `/listings/${listingId}`

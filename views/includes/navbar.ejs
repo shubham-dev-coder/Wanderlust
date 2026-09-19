@@ -1,81 +1,86 @@
+
 <nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
   <div class="container-fluid">
 
-
-<!-- Logo -->
-<a class="navbar-brand" href="/">
-  <i class="fa-solid fa-compass"></i>
-</a>
-
-<!-- Mobile Menu Button -->
-<button
-  class="navbar-toggler"
-  type="button"
-  data-bs-toggle="collapse"
-  data-bs-target="#navbarNav"
-  aria-controls="navbarNav"
-  aria-expanded="false"
-  aria-label="Toggle navigation"
->
-  <i class="fa-solid fa-bars"></i>
-</button>
-
-<div class="collapse navbar-collapse" id="navbarNav">
-
-  <!-- Left Side -->
-  <div class="navbar-nav me-md-auto">
-    <a class="nav-link" href="/listings">Explore</a>
-  </div>
-
-  <!-- Search -->
-  <form
-    class="d-flex navbar-search-form align-items-center mx-md-auto my-2 my-md-0"
-    role="search"
-  >
-    <input
-      class="form-control search-inp"
-      type="search"
-      placeholder="Search destinations"
-      aria-label="Search"
-    >
-
-    <button class="btn search-btn" type="submit">
-      <i class="fa-solid fa-magnifying-glass me-1"></i>
-      Search
-    </button>
-  </form>
-
-  <!-- Right Side -->
-  <div class="navbar-nav ms-md-auto align-items-md-center">
-
-    <a class="nav-link" href="/listings/new">
-      Airbnb your home
+    <!-- Logo -->
+    <a class="navbar-brand" href="/">
+      <i class="fa-solid fa-compass"></i>
     </a>
 
-    <% if(!currentUser){ %>
+    <!-- Mobile Menu Button -->
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <i class="fa-solid fa-bars"></i>
+    </button>
 
-      <a class="nav-link" href="/signup">
-        <b>Sign up</b>
-      </a>
+    <div class="collapse navbar-collapse" id="navbarNav">
 
-      <a class="nav-link" href="/login">
-        <b>Log in</b>
-      </a>
+      <!-- Left Side -->
+      <div class="navbar-nav me-md-auto">
+        <a class="nav-link" href="/listings">Explore</a>
+      </div>
 
-    <% } %>
+      <!-- Search -->
+      <form
+        action="/listings/search"
+        method="GET"
+        class="d-flex navbar-search-form align-items-center mx-md-auto my-2 my-md-0"
+        role="search"
+      >
 
-    <% if(currentUser){ %>
+        <input
+          class="form-control search-inp"
+          type="search"
+          name="query"
+          placeholder="Search destinations"
+          aria-label="Search"
+        >
 
-      <a class="nav-link" href="/logout">
-        Logout
-      </a>
+        <button class="btn search-btn" type="submit">
+          <i class="fa-solid fa-magnifying-glass me-1"></i>
+          Search
+        </button>
 
-    <% } %>
+      </form>
 
-  </div>
+      <!-- Right Side -->
+      <div class="navbar-nav ms-md-auto align-items-md-center">
 
-</div>
+        <a class="nav-link" href="/listings/new">
+          Airbnb your home
+        </a>
 
+        <% if(!currentUser){ %>
+
+          <a class="nav-link" href="/signup">
+            <b>Sign up</b>
+          </a>
+
+          <a class="nav-link" href="/login">
+            <b>Log in</b>
+          </a>
+
+        <% } %>
+
+        <% if(currentUser){ %>
+
+          <a class="nav-link" href="/logout">
+            Logout
+          </a>
+
+        <% } %>
+
+      </div>
+
+    </div>
 
   </div>
 </nav>
+
